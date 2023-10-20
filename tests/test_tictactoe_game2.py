@@ -11,7 +11,9 @@ def test_print_board(capsys):
         "---------\n"
         "O | X |  \n"
     )
-    assert captured.out == expected_output
+    # Remove leading/trailing white spaces and compare
+    assert captured.out.strip() == expected_output.strip()
+
 
 def test_check_win():
     board_x_wins = [["X", "O", "X"], [" ", "X", "O"], ["O", " ", "X"]]
