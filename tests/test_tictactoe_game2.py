@@ -31,3 +31,17 @@ def test_is_full():
     
     assert is_full(board_full) == True
     assert is_full(board_not_full) == False
+
+def test_check_win_horizontal():
+    # Test for a horizontal win by player 'X' in the first row.
+    board_x_win = [["X", "X", "X"], [" ", "O", "O"], ["O", "X", "O"]]
+    assert check_win(board_x_win, "X") == True
+
+    # Test for a horizontal win by player 'O' in the second row.
+    board_o_win = [["X", "X", "O"], ["O", "O", "O"], ["X", "X", "O"]]
+    assert check_win(board_o_win, "O") == True
+
+    # Test for no horizontal win.
+    board_no_win = [["X", "O", "X"], [" ", "O", "X"], ["O", "X", "O"]]
+    assert check_win(board_no_win, "X") == False
+    assert check_win(board_no_win, "O") == False
