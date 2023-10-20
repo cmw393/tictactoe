@@ -10,16 +10,7 @@ def print_board(board):
         print("-" * 9)  # Display horizontal lines to separate rows.
 
 def check_win(board, player):
-    """
-    Check if a player has won the game.
-
-    Parameters:
-        board (list of lists): The 3x3 Tic-Tac-Toe board.
-        player (str): The player to check for a win (either 'X' or 'O').
-
-    Returns:
-        bool: True if the player has won, False otherwise.
-    """
+    # Check for horizontal and vertical wins.
     for row in board:
         if all(cell == player for cell in row):
             return True
@@ -28,10 +19,16 @@ def check_win(board, player):
         if all(board[row][col] == player for row in range(3)):
             return True
 
-    if all(board[i][i] == player for i in range(3)) or all(board[i][2 - i] == player for i in range(3)):
+    # Check for diagonal wins from top-left to bottom-right.
+    if all(board[i][i] == player for i in range(3)):
+        return True
+
+    # Check for diagonal wins from bottom-left to top-right.
+    if all(board[i][2 - i] == player for i in range(3)):
         return True
 
     return False
+
 
 def is_full(board):
     """
