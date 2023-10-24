@@ -1,34 +1,73 @@
-import unittest
-from unittest.mock import patch
-import io
+import pytest
+from io import StringIO
 import sys
+from tictactoe2.tictactoe_game import print_board, check_win, is_full
 
-def simulate_game(inputs):
-    with patch('sys.stdout', new_callable=io.StringIO) as mock_stdout:
-        with patch('builtins.input', side_effect=inputs):
-            exec(open('tic_tac_toe.py').read())
-        output = mock_stdout.getvalue()
-    return output
+def test_print_board(capsys):
+    board = [
+        ["X", "O", "X"],
+        ["O", "X", "O"],
+        ["O", "X", "X"]
+    ]
 
-class TestTicTacToe(unittest.TestCase):
+    expected_output = "X | O | X\n---------\nO | X | O\n---------\nO | X | X\n---------\n"
 
-    def test_valid_gameplay(self):
-        # Simulate a valid game where 'X' wins.
-        inputs = ['0', '0', '0', '1', '1', '1', '2', '2', '2']
-        output = simulate_game(inputs)
-        self.assertIn("Player X wins!", output)
+    print_board(board)
+    captured = capsys.readouterr()
+    
+    assert captured.out == expected_output
 
-    def test_invalid_move_then_valid_gameplay(self):
-        # Simulate an invalid move followed by valid gameplay where 'O' wins.
-        inputs = ['0', '0', '0', '1', '1', '1', '2', '2', '2', '2', '1', '2']
-        output = simulate_game(inputs)
-        self.assertIn("Player O wins!", output)
+def test_check_win():
+    board1 = [
+        ["X", "O", "X"],
+        ["O", "X", "O"],
+        ["O", "X", "X"]
+    ]
 
-    def test_tie_game(self):
-        # Simulate a tie game where the board is full.
-        inputs = ['0', '0', '0', '0', '2', '2', '2', '1', '1', '1', '1']
-        output = simulate_game(inputs)
-        self.assertIn("It's a tie!", output)
+    board2 = [
+        ["X", "O", "X"],
+        ["O", "X", "O"],
+        ["X", "O", "X"]
+    ]
 
-if __name__ == '__main__':
-    unittest.main()
+    assert check_win(board1, "X") is True
+    assert check_win(board1, "O") is True
+    assert check_win(board2, "X") is True
+    assert check_win(board2, "O") is True
+
+def test_is_full():
+    full_board = [
+        ["X", "O", "X"],
+        ["O", "X", "O"],
+        ["O", "X", "X"]
+    ]
+
+    not_full_board = [
+        ["X", "O", "X"],
+        ["O", "X", " "],
+        ["O", "X", "X"]
+    ]
+
+    assert is_full(full_board) is True
+    assert is_full(not_full_board) is False
+
+def test_main(monkeypatch, capsys):
+    from tictactoe2.tictactoe_game import main
+
+    def simulate_game_input(inputs):
+        input_iterator = iter(inputs)
+        monkeypatch.setattr('builtins.input', lambda prompt: next(input_iterator))
+
+    # Simulate a game where X wins
+    simulate_game_input(["0", "0", "1", "1", "0", "1", "2", "2", "2"])
+    main()
+
+    captured = capsys.readouterr()
+    assert "Player X wins!" in captured.out
+
+    # Simulate a game that ends in a tie
+    simulate_game_input(["0", "0", "0", "1", "1", "0", "1", "1", "2", "0", "2", "1", "2", "2"])
+    main()
+
+    captured = capsys.readouterr()
+    assert "It's a tie!" in captured.out
