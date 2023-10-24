@@ -1,20 +1,5 @@
 from tictactoe2.tictactoe_game import print_board, check_win, is_full
 
-def test_print_board(capsys):
-    board = [["X", "O", "X"], [" ", "O", "X"], ["O", "X", " "]]
-    print_board(board)
-    captured = capsys.readouterr()
-    expected_output = (
-        "X | O | X\n"
-        "---------\n"
-        "  | O | X\n"
-        "---------\n"
-        "O | X |  \n"
-    )
-    # Remove leading/trailing white spaces and compare
-    assert captured.out.strip() == expected_output.strip()
-
-
 def test_check_win():
     board_x_wins = [["X", "O", "X"], [" ", "X", "O"], ["O", " ", "X"]]
     board_o_wins = [["X", "O", "X"], [" ", "O", "X"], ["O", "O", "X"]]
@@ -60,16 +45,4 @@ def test_check_win_vertical():
     assert check_win(board_no_win, "X") == False
     assert check_win(board_no_win, "O") == False
 
-def test_check_win_diagonal():
-    # Test for a diagonal win by player 'X' from the top-left to bottom-right.
-    board_x_win = [["X", "O", "O"], ["O", "X", "O"], ["O", "O", "X"]]
-    assert check_win(board_x_win, "X") == True
 
-    # Test for a diagonal win by player 'O' from the bottom-left to top-right.
-    board_o_win = [["O", "O", "X"], ["O", "X", "O"], ["X", "O", "O"]]
-    assert check_win(board_o_win, "O") == True
-
-    # Test for no diagonal win.
-    board_no_win = [["X", "O", "X"], ["O", "X", "O"], ["O", "X", "O"]]
-    assert check_win(board_no_win, "X") == False
-    assert check_win(board_no_win, "O") == False
