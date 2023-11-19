@@ -1,4 +1,4 @@
-from tictactoe import check_win, is_full
+from tictactoe2.tictactoe_game import check_win, is_full
 
 def test_check_win():
     # Test winning horizontally
